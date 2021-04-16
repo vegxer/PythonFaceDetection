@@ -29,16 +29,18 @@ class FaceDetection:
         opencv_detector = OpenCVFaceDetection(self.__image_name, self.__opencv_train_file, self.__scale_factor,
                                               self.__min_neighbors, self.__min_window_width, self.__min_window_height,
                                               self.__max_window_width, self.__max_window_height)
-        self.__img = opencv_detector.detect_face()
+        self.__img, exec_time = opencv_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
             self.__show_image()
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __dlib_detection(self):
         dlib_detector = DlibFaceDetection(self.__image_name, self.__dlib_train_file, self.__pooling_layers)
-        self.__img = dlib_detector.detect_face()
+        self.__img, exec_time = dlib_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
             self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
             self.__show_image()
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __show_image(self):
         if self.__img.size != 0:

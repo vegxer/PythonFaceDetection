@@ -2,6 +2,7 @@ import dlib
 import cv2
 import os.path
 from tkinter import messagebox
+import time
 
 
 class DlibFaceDetection:
@@ -12,10 +13,13 @@ class DlibFaceDetection:
         self.set_image_path(image_name)
 
     def detect_face(self):
+        end = start = 0
         if self.__are_all_variables_set():
             self.__img = dlib.load_rgb_image(self.__image_name)
             cnn_face_detector = dlib.cnn_face_detection_model_v1(self.__training_file)
+            start = time.time()
             faces = cnn_face_detector(self.__img, self.__pooling_layers)
+            end = time.time()
             for face in faces:
                 x = face.rect.left()
                 y = face.rect.top()
@@ -26,7 +30,7 @@ class DlibFaceDetection:
                 cv2.rectangle(self.__img, (x, y), (x + w, y + h), (255, 0, 0), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
-        return self.__img
+        return self.__img, end - start
 
     def set_image_path(self, path):
         if os.path.exists(str(path)):

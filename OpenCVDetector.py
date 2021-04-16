@@ -1,6 +1,7 @@
 from tkinter import messagebox
 import cv2
 import os.path
+import time
 
 
 class OpenCVFaceDetection:
@@ -21,16 +22,19 @@ class OpenCVFaceDetection:
             self.set_min_size('{}x{}'.format(min_window_width, min_window_height))
 
     def detect_face(self):
+        start = end = 0
         if self.__are_all_variables_set():
             face_cascade = cv2.CascadeClassifier(self.__xml_file)
             self.__img = cv2.imread(self.__image_name)
             gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
+            start = time.time()
             faces = self.__detect_faces(face_cascade, gray)
+            end = time.time()
             for (x, y, w, h) in faces:
                 cv2.rectangle(self.__img, (x, y), (x + w, y + h), (0, 0, 255), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
-        return self.__img
+        return self.__img, end - start
 
     def __detect_faces(self, face_cascade, gray):
         if self.__min_window_width and self.__max_window_width:
