@@ -117,7 +117,7 @@ class FaceDetection:
         r = (self.__root.winfo_screenwidth() - self.__root.winfo_reqwidth()) / 2.5
         t = (self.__root.winfo_screenheight() - self.__root.winfo_reqheight()) / 2.5
         self.__root.wm_geometry("+%d+%d" % (r, t))
-        self.__root.resizable(width=False, height=False)
+        # self.__root.resizable(width=False, height=False)
         self.__root.iconphoto(True, ImageTk.PhotoImage(Image.open("app_icon.png")))
 
     def __init_menu(self):
