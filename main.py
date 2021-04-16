@@ -1,5 +1,4 @@
 import numpy
-
 from SettingsWindowOpenCV import SettingsWindowOpenCV
 from SettingsWindowsDlib import SettingsWindowDlib
 from OpenCVDetector import OpenCVFaceDetection

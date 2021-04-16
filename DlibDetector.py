@@ -6,7 +6,7 @@ from tkinter import messagebox
 
 class DlibFaceDetection:
     def __init__(self, image_name, training_file, pooling_layers):
-        self.__img = None
+        self.__img = self.__training_file = self.__pooling_layers = self.__image_name = None
         self.set_training_file(training_file)
         self.set_pooling_layers(pooling_layers)
         self.set_image_path(image_name)
@@ -25,23 +25,23 @@ class DlibFaceDetection:
                 # draw box over face
                 cv2.rectangle(self.__img, (x, y), (x + w, y + h), (255, 0, 0), 1)
         else:
-            messagebox.showerror("Settings error", "Not all settings have been set")
+            messagebox.showerror("Settings error", "Detection is not available due to settings")
         return self.__img
 
     def set_image_path(self, path):
-        if os.path.exists(path):
+        if os.path.exists(str(path)):
             self.__image_name = path
         else:
-            raise FileNotFoundError
+            messagebox.showerror("File error", "Image is not uploaded")
 
     def get_image_path(self):
         return self.__image_name
 
     def set_training_file(self, file):
-        if os.path.exists(file):
+        if os.path.exists(str(file)):
             self.__training_file = file
         else:
-            raise FileNotFoundError
+            messagebox.showerror("File error", "Training file is not uploaded")
 
     def get_training_file(self):
         return self.__training_file
@@ -51,9 +51,9 @@ class DlibFaceDetection:
             if 0 <= pooling_layers <= 3:
                 self.__pooling_layers = pooling_layers
             else:
-                raise ValueError
+                messagebox.showerror("Value error", "Variable \'pooling_layers\' is out of range")
         else:
-            raise TypeError
+            messagebox.showerror("Type error", "Variable \'pooling_layers\' must be int")
 
     def get_pooling_layers(self):
         return self.__pooling_layers

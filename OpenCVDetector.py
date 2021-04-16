@@ -6,7 +6,7 @@ import os.path
 class OpenCVFaceDetection:
     def __init__(self, image_name, xml_file, scale_factor, min_neighbors, min_window_width=None, min_window_height=None,
                  max_window_width=None, max_window_height=None):
-        self.__img = None
+        self.__img = self.__image_name = self.__xml_file = self.__scale_factor = None
         self.set_image_path(image_name)
         self.set_training_file(xml_file)
         self.set_scale_factor(scale_factor)
@@ -29,7 +29,7 @@ class OpenCVFaceDetection:
             for (x, y, w, h) in faces:
                 cv2.rectangle(self.__img, (x, y), (x + w, y + h), (0, 0, 255), 1)
         else:
-            messagebox.showerror("Settings error", "Not all settings have been set")
+            messagebox.showerror("Settings error", "Detection is not available due to settings")
         return self.__img
 
     def __detect_faces(self, face_cascade, gray):
@@ -51,19 +51,19 @@ class OpenCVFaceDetection:
                                                  minNeighbors=self.__min_neighbors)
 
     def set_image_path(self, path):
-        if os.path.exists(path):
+        if os.path.exists(str(path)):
             self.__image_name = path
         else:
-            raise FileNotFoundError
+            messagebox.showerror("File error", "Image is not uploaded")
 
     def get_image_path(self):
         return self.__image_name
 
     def set_training_file(self, path):
-        if os.path.exists(path):
+        if os.path.exists(str(path)):
             self.__xml_file = path
         else:
-            raise FileNotFoundError
+            messagebox.showerror("File error", "Training file is not uploaded")
 
     def get_training_file(self):
         return self.__xml_file
@@ -73,9 +73,9 @@ class OpenCVFaceDetection:
             if 0.001 <= scale_factor <= 2:
                 self.__scale_factor = scale_factor
             else:
-                raise ValueError
+                messagebox.showerror("Value error", "Variable \'scale-factor\' is out of range")
         else:
-            raise TypeError
+            messagebox.showerror("Type error", "Variable \'scale-factor\' must be float")
 
     def get_scale_factor(self):
         return self.__scale_factor
@@ -85,18 +85,18 @@ class OpenCVFaceDetection:
             if 1000 >= min_neighbors > 0:
                 self.__min_neighbors = min_neighbors
             else:
-                raise ValueError
+                messagebox.showerror("Value error", "Variable \'min_neighbors\' is out of range")
         else:
-            raise TypeError
+            messagebox.showerror("Type error", "Variable \'min_neighbors\' must be integer")
 
     def get_min_neighbors(self):
         return self.__min_neighbors
 
     def set_min_size(self, size):
-        width = size[0:size.find('x')](TypeError)(int)
-        height = size[size.find('x') + 1:](TypeError)(int)
+        width = size[0:size.find('x')](messagebox.showerror("Type error", "Variable \'width\' must be integer"))(int)
+        height = size[size.find('x') + 1:](messagebox.showerror("Type error", "Variable \'height\' must be integer"))(int)
         if width < 1 or height < 1 or (self.__max_window_width != None and self.__max_window_height < height and self.__max_window_width < width):
-            raise ValueError
+            messagebox.showerror("Value error", "Variable \'min_size\' is out of range")
         self.__min_window_width = width
         self.__min_window_height = height
 
@@ -104,10 +104,10 @@ class OpenCVFaceDetection:
         return self.__min_window_width, self.__min_window_height
 
     def set_max_size(self, size):
-        width = size[0:size.find('x')](TypeError)(int)
-        height = size[size.find('x') + 1:](TypeError)(int)
+        width = size[0:size.find('x')](messagebox.showerror("Type error", "Variable \'width\' must be integer"))(int)
+        height = size[size.find('x') + 1:](messagebox.showerror("Type error", "Variable \'height\' must be integer"))(int)
         if width < 1 or height < 1 or (self.__min_window_width != None and self.__min_window_height > height and self.__min_window_width > width):
-            raise ValueError
+            messagebox.showerror("Value error", "Variable \'max_size\' is out of range")
         self.__max_window_width = width
         self.__max_window_height = height
 
