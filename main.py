@@ -1,8 +1,8 @@
 import numpy
 from SettingsWindowOpenCV import SettingsWindowOpenCV
-from SettingsWindowsDlib import SettingsWindowDlib
+from SettingsWindowsCNN import SettingsWindowCNN
 from OpenCVDetector import OpenCVFaceDetection
-from DlibDetector import DlibFaceDetection
+from CNNDetector import CNNFaceDetection
 from pathlib import Path
 import cv2
 from tkinter import ttk
@@ -16,7 +16,7 @@ class FaceDetection:
         self.__image = NONE
         self.__scale_factor = self.__min_neighbors = self.__min_window_width = self.__min_window_height = \
             self.__max_window_width = self.__max_window_height = self.__pooling_layers = \
-            self.__opencv_train_file = self.__dlib_train_file = self.__image_name = None
+            self.__opencv_train_file = self.__cnn_train_file = self.__image_name = None
         self.__face_found = False
 
     def open(self):
@@ -32,15 +32,15 @@ class FaceDetection:
         self.__img, exec_time = opencv_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
             self.__show_image()
-            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+        messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
-    def __dlib_detection(self):
-        dlib_detector = DlibFaceDetection(self.__image_name, self.__dlib_train_file, self.__pooling_layers)
-        self.__img, exec_time = dlib_detector.detect_face()
+    def __cnn_detection(self):
+        cnn_detector = CNNFaceDetection(self.__image_name, self.__cnn_train_file, self.__pooling_layers)
+        self.__img, exec_time = cnn_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
             self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
             self.__show_image()
-            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+        messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __show_image(self):
         if self.__img.size != 0:
@@ -104,11 +104,11 @@ class FaceDetection:
         self.__max_window_height = settings_window.height_max
         self.__max_window_width = settings_window.width_max
 
-    def __dlib_settings(self):
-        settings_window = SettingsWindowDlib(self.__dlib_train_file, self.__pooling_layers)
+    def __cnn_settings(self):
+        settings_window = SettingsWindowCNN(self.__cnn_train_file, self.__pooling_layers)
         settings_window.open_dialog(self.__root)
         self.__pooling_layers = settings_window.pooling_layers
-        self.__dlib_train_file = settings_window.training_file
+        self.__cnn_train_file = settings_window.training_file
 
     def __init_root(self):
         self.__root = Tk()
@@ -133,14 +133,14 @@ class FaceDetection:
 
         self.__setting_menu = Menu(self.__menubar, tearoff=0)
         self.__setting_menu.add_command(label="Haar cascade setting", command=self.__opencv_settings)
-        self.__setting_menu.add_command(label="CNN settings", command=self.__dlib_settings)
+        self.__setting_menu.add_command(label="CNN settings", command=self.__cnn_settings)
         self.__menubar.add_cascade(label="Settings", menu=self.__setting_menu)
 
         self.__menubar.add_separator()
 
         self.__detect_menu = Menu(self.__menubar, tearoff=0)
         self.__detect_menu.add_command(label="Haar cascade detection", command=self.__opencv_detection)
-        self.__detect_menu.add_command(label="CNN detection", command=self.__dlib_detection)
+        self.__detect_menu.add_command(label="CNN detection", command=self.__cnn_detection)
         self.__menubar.add_cascade(label="Detect", menu=self.__detect_menu)
 
         self.__root.config(menu=self.__menubar)
@@ -156,7 +156,8 @@ class FaceDetection:
         self.__scrollbarY.config(command=self.__my_canvas.yview)
 
         self.__my_canvas.configure(yscrollcommand=self.__scrollbarY.set, xscrollcommand=self.__scrollbarX.set)
-        self.__my_canvas.bind('<Configure>', lambda e: self.__my_canvas.configure(scrollregion=self.__my_canvas.bbox("all")))
+        self.__my_canvas.bind('<Configure>',
+                              lambda e: self.__my_canvas.configure(scrollregion=self.__my_canvas.bbox("all")))
 
         self.__frame = Frame(self.__my_canvas)
         self.__my_canvas.create_window((0, 0), window=self.__frame, anchor="nw")
