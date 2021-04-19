@@ -1,4 +1,6 @@
 import numpy
+from SettingWindowHOG import SettingsWindowHOG
+from HOGDetector import HOGFaceDetection
 from SettingsWindowOpenCV import SettingsWindowOpenCV
 from SettingsWindowsCNN import SettingsWindowCNN
 from OpenCVDetector import OpenCVFaceDetection
@@ -16,7 +18,7 @@ class FaceDetection:
         self.__image = NONE
         self.__scale_factor = self.__min_neighbors = self.__min_window_width = self.__min_window_height = \
             self.__max_window_width = self.__max_window_height = self.__pooling_layers = \
-            self.__opencv_train_file = self.__cnn_train_file = self.__image_name = None
+            self.__opencv_train_file = self.__cnn_train_file = self.__image_name = self.__upsampling_number = None
         self.__face_found = False
 
     def open(self):
@@ -32,7 +34,7 @@ class FaceDetection:
         self.__img, exec_time = opencv_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
             self.__show_image()
-        messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __cnn_detection(self):
         cnn_detector = CNNFaceDetection(self.__image_name, self.__cnn_train_file, self.__pooling_layers)
@@ -40,7 +42,15 @@ class FaceDetection:
         if type(self.__img) is numpy.ndarray:
             self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
             self.__show_image()
-        messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+
+    def __hog_detection(self):
+        hog_detector = HOGFaceDetection(self.__image_name, self.__upsampling_number)
+        self.__img, exec_time = hog_detector.detect_face()
+        if type(self.__img) is numpy.ndarray:
+            self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
+            self.__show_image()
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __show_image(self):
         if self.__img.size != 0:
@@ -110,6 +120,11 @@ class FaceDetection:
         self.__pooling_layers = settings_window.pooling_layers
         self.__cnn_train_file = settings_window.training_file
 
+    def __hog_settings(self):
+        settings_window = SettingsWindowHOG(self.__upsampling_number)
+        settings_window.open_dialog(self.__root)
+        self.__upsampling_number = settings_window.upsampling_number
+
     def __init_root(self):
         self.__root = Tk()
         self.__root.geometry("500x500")
@@ -134,6 +149,7 @@ class FaceDetection:
         self.__setting_menu = Menu(self.__menubar, tearoff=0)
         self.__setting_menu.add_command(label="Haar cascade setting", command=self.__opencv_settings)
         self.__setting_menu.add_command(label="CNN settings", command=self.__cnn_settings)
+        self.__setting_menu.add_command(label="HOG settings", command=self.__hog_settings)
         self.__menubar.add_cascade(label="Settings", menu=self.__setting_menu)
 
         self.__menubar.add_separator()
@@ -141,6 +157,7 @@ class FaceDetection:
         self.__detect_menu = Menu(self.__menubar, tearoff=0)
         self.__detect_menu.add_command(label="Haar cascade detection", command=self.__opencv_detection)
         self.__detect_menu.add_command(label="CNN detection", command=self.__cnn_detection)
+        self.__detect_menu.add_command(label="HOG detection", command=self.__hog_detection)
         self.__menubar.add_cascade(label="Detect", menu=self.__detect_menu)
 
         self.__root.config(menu=self.__menubar)

@@ -7,7 +7,7 @@ import time
 class OpenCVFaceDetection:
     def __init__(self, image_name, xml_file, scale_factor, min_neighbors, min_window_width=None, min_window_height=None,
                  max_window_width=None, max_window_height=None):
-        self.__img = self.__image_name = self.__xml_file = self.__scale_factor = None
+        self.__img = self.__image_name = self.__xml_file = self.__scale_factor = self.__min_neighbors = None
         self.set_image_path(image_name)
         self.set_training_file(xml_file)
         self.set_scale_factor(scale_factor)
