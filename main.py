@@ -1,5 +1,6 @@
 import numpy
 from SettingWindowHOG import SettingsWindowHOG
+from MTCNNDetector import MTCNNFaceDetection
 from HOGDetector import HOGFaceDetection
 from SettingsWindowOpenCV import SettingsWindowOpenCV
 from SettingsWindowsCNN import SettingsWindowCNN
@@ -33,6 +34,7 @@ class FaceDetection:
                                               self.__max_window_width, self.__max_window_height)
         self.__img, exec_time = opencv_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
+            self.__img = cv2.cvtColor(self.__img, cv2.COLOR_BGR2RGB)
             self.__show_image()
             messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
@@ -40,7 +42,6 @@ class FaceDetection:
         cnn_detector = CNNFaceDetection(self.__image_name, self.__cnn_train_file, self.__pooling_layers)
         self.__img, exec_time = cnn_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
-            self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
             self.__show_image()
             messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
@@ -48,14 +49,20 @@ class FaceDetection:
         hog_detector = HOGFaceDetection(self.__image_name, self.__upsampling_number)
         self.__img, exec_time = hog_detector.detect_face()
         if type(self.__img) is numpy.ndarray:
-            self.__img = cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR)
+            self.__show_image()
+            messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
+
+    def __mtcnn_detection(self):
+        mtcnn_detector = MTCNNFaceDetection(self.__image_name)
+        self.__img, exec_time = mtcnn_detector.detect_face()
+        if type(self.__img) is numpy.ndarray:
             self.__show_image()
             messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __show_image(self):
         if self.__img.size != 0:
             self.__face_found = True
-        self.__image = ImageTk.PhotoImage(Image.fromarray(cv2.cvtColor(self.__img, cv2.COLOR_BGR2RGB)))
+        self.__image = ImageTk.PhotoImage(Image.fromarray(self.__img))
         self.__picture_box.configure(image=self.__image)
         self.__picture_box.image = self.__image
 
@@ -85,11 +92,11 @@ class FaceDetection:
         if self.__image_correct():
             file_name = filedialog.asksaveasfilename()
             if file_name:
-                cv2.imwrite(file_name + Path(self.__image_name).suffix, self.__img)
+                cv2.imwrite(file_name + Path(self.__image_name).suffix, cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR))
 
     def __save_image(self):
         if self.__image_correct():
-            cv2.imwrite(self.__image_name, self.__img)
+            cv2.imwrite(self.__image_name, cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR))
 
     def __image_correct(self):
         if self.__image != NONE:
@@ -147,7 +154,7 @@ class FaceDetection:
         self.__menubar.add_separator()
 
         self.__setting_menu = Menu(self.__menubar, tearoff=0)
-        self.__setting_menu.add_command(label="Haar cascade setting", command=self.__opencv_settings)
+        self.__setting_menu.add_command(label="Haar cascade settings", command=self.__opencv_settings)
         self.__setting_menu.add_command(label="CNN settings", command=self.__cnn_settings)
         self.__setting_menu.add_command(label="HOG settings", command=self.__hog_settings)
         self.__menubar.add_cascade(label="Settings", menu=self.__setting_menu)
@@ -158,6 +165,7 @@ class FaceDetection:
         self.__detect_menu.add_command(label="Haar cascade detection", command=self.__opencv_detection)
         self.__detect_menu.add_command(label="CNN detection", command=self.__cnn_detection)
         self.__detect_menu.add_command(label="HOG detection", command=self.__hog_detection)
+        self.__detect_menu.add_command(label="MTCNN detection", command=self.__mtcnn_detection)
         self.__menubar.add_cascade(label="Detect", menu=self.__detect_menu)
 
         self.__root.config(menu=self.__menubar)
