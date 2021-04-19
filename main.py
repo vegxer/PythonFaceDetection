@@ -136,8 +136,8 @@ class FaceDetection:
         self.__root = Tk()
         self.__root.geometry("500x500")
         self.__root.title("Face detection")
-        r = (self.__root.winfo_screenwidth() - self.__root.winfo_reqwidth()) / 2.5
-        t = (self.__root.winfo_screenheight() - self.__root.winfo_reqheight()) / 2.5
+        r = (self.__root.winfo_screenwidth() - 500) / 2
+        t = (self.__root.winfo_screenheight() - 500) / 2
         self.__root.wm_geometry("+%d+%d" % (r, t))
         # self.__root.resizable(width=False, height=False)
         self.__root.iconphoto(True, ImageTk.PhotoImage(Image.open("app_icon.png")))
