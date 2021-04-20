@@ -1,11 +1,8 @@
 import cv2
 import os.path
 from facenet_pytorch import MTCNN
-import dlib
 import torch
-from numpy import ndarray
 from tkinter import messagebox
-from PIL import Image, ImageDraw
 import time
 
 
@@ -23,8 +20,9 @@ class MTCNNFaceDetection:
             start = time.time()
             faces, _ = mtcnn.detect(self.__img)
             end = time.time()
-            for face in faces:
-                cv2.rectangle(self.__img, (face[0], face[1]), (face[2], face[3]), (255, 0, 0), 1)
+            if faces is not None:
+                for face in faces:
+                    cv2.rectangle(self.__img, (face[0], face[1]), (face[2], face[3]), (255, 0, 0), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
         return self.__img, end - start

@@ -135,9 +135,12 @@ class SettingsWindowOpenCV:
         try:
             self.min_size = self.text_min_size.get("1.0", END)
             if self.min_size != '\n':
-                self.width_min = int(self.min_size[0:self.min_size.find('x')])
-                self.height_min = int(self.min_size[self.min_size.find('x') + 1:])
-                if self.width_min < 1 or self.height_min < 1:
+                if 'x' in self.min_size:
+                    self.width_min = int(self.min_size[0:self.min_size.find('x')])
+                    self.height_min = int(self.min_size[self.min_size.find('x') + 1:])
+                    if self.width_min < 1 or self.height_min < 1:
+                        raise ValueError
+                else:
                     raise ValueError
             return False
         except ValueError:
@@ -149,9 +152,12 @@ class SettingsWindowOpenCV:
         try:
             self.max_size = self.text_max_size.get("1.0", END)
             if self.max_size != '\n':
-                self.width_max = int(self.max_size[0:self.max_size.find('x')])
-                self.height_max = int(self.max_size[self.max_size.find('x') + 1:])
-                if self.width_max < self.width_min and self.height_max < self.height_min:
+                if 'x' in self.max_size:
+                    self.width_max = int(self.max_size[0:self.max_size.find('x')])
+                    self.height_max = int(self.max_size[self.max_size.find('x') + 1:])
+                    if self.width_max < self.width_min and self.height_max < self.height_min:
+                        raise ValueError
+                else:
                     raise ValueError
             return False
         except ValueError:

@@ -97,23 +97,29 @@ class OpenCVFaceDetection:
         return self.__min_neighbors
 
     def set_min_size(self, size):
-        width = size[0:size.find('x')](messagebox.showerror("Type error", "Variable \'width\' must be integer"))(int)
-        height = size[size.find('x') + 1:](messagebox.showerror("Type error", "Variable \'height\' must be integer"))(int)
-        if width < 1 or height < 1 or (self.__max_window_width != None and self.__max_window_height < height and self.__max_window_width < width):
-            messagebox.showerror("Value error", "Variable \'min_size\' is out of range")
-        self.__min_window_width = width
-        self.__min_window_height = height
+        try:
+            width = int(size[0:size.find('x')])
+            height = int(size[size.find('x') + 1:])
+            if width < 1 or height < 1 or (self.__max_window_width != None and self.__max_window_height < height and self.__max_window_width < width):
+                messagebox.showerror("Value error", "Variable \'min_size\' is out of range")
+            self.__min_window_width = width
+            self.__min_window_height = height
+        except:
+            (messagebox.showerror("Type error", "Size must be in form WIDTHxHEIGHT"))
 
     def get_min_size(self):
         return self.__min_window_width, self.__min_window_height
 
     def set_max_size(self, size):
-        width = size[0:size.find('x')](messagebox.showerror("Type error", "Variable \'width\' must be integer"))(int)
-        height = size[size.find('x') + 1:](messagebox.showerror("Type error", "Variable \'height\' must be integer"))(int)
-        if width < 1 or height < 1 or (self.__min_window_width != None and self.__min_window_height > height and self.__min_window_width > width):
-            messagebox.showerror("Value error", "Variable \'max_size\' is out of range")
-        self.__max_window_width = width
-        self.__max_window_height = height
+        try:
+            width = int(size[0:size.find('x')])
+            height = int(size[size.find('x') + 1:])
+            if width < 1 or height < 1 or (self.__min_window_width != None and self.__min_window_height > height and self.__min_window_width > width):
+                messagebox.showerror("Value error", "Variable \'max_size\' is out of range")
+            self.__max_window_width = width
+            self.__max_window_height = height
+        except:
+            (messagebox.showerror("Type error", "Size must be in form WIDTHxHEIGHT"))
 
     def get_max_size(self):
         return self.__max_window_width, self.__max_window_height
