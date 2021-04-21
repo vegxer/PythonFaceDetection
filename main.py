@@ -134,10 +134,10 @@ class FaceDetection:
 
     def __init_root(self):
         self.__root = Tk()
-        self.__root.geometry("500x500")
+        self.__root.geometry("793x409")
         self.__root.title("Face detection")
-        r = (self.__root.winfo_screenwidth() - 500) / 2
-        t = (self.__root.winfo_screenheight() - 500) / 2
+        r = (self.__root.winfo_screenwidth() - 800) / 2
+        t = (self.__root.winfo_screenheight() - 400) / 2
         self.__root.wm_geometry("+%d+%d" % (r, t))
         # self.__root.resizable(width=False, height=False)
         self.__root.iconphoto(True, ImageTk.PhotoImage(Image.open("app_icon.png")))
@@ -186,9 +186,8 @@ class FaceDetection:
 
         self.__frame = Frame(self.__my_canvas)
         self.__my_canvas.create_window((0, 0), window=self.__frame, anchor="nw")
-
-        self.__picture_box = Label(self.__frame, text="Set the settings and upload an image", font="Arial 16", width=39,
-                                   height=15)
+        self.start_image = ImageTk.PhotoImage(Image.open("load_screen.png"))
+        self.__picture_box = Label(self.__frame, image=self.start_image)
         self.__picture_box.pack()
 
 
