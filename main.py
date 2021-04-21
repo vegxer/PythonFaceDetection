@@ -6,7 +6,7 @@ from SettingsWindowOpenCV import SettingsWindowOpenCV
 from SettingsWindowsCNN import SettingsWindowCNN
 from OpenCVDetector import OpenCVFaceDetection
 from CNNDetector import CNNFaceDetection
-from pathlib import Path
+from SaveImage import SaveImage
 import cv2
 from tkinter import ttk
 from tkinter import *
@@ -89,24 +89,10 @@ class FaceDetection:
         self.__root.geometry('{}x{}'.format(img_width + 25, img_height + 25))
 
     def __save_image_as(self):
-        if self.__image_correct():
-            file_name = filedialog.asksaveasfilename()
-            if file_name:
-                cv2.imwrite(file_name + Path(self.__image_name).suffix, cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR))
+        SaveImage.save_as(self.__image_name, self.__img, self.__face_found)
 
     def __save_image(self):
-        if self.__image_correct():
-            cv2.imwrite(self.__image_name, cv2.cvtColor(self.__img, cv2.COLOR_RGB2BGR))
-
-    def __image_correct(self):
-        if self.__image != NONE:
-            if self.__face_found:
-                return True
-            else:
-                messagebox.showwarning("Save error", "Image hasn't been changed")
-        else:
-            messagebox.showwarning("Undefined image", "Image hasn't been loaded")
-        return False
+        SaveImage.save(self.__image_name, self.__img, self.__face_found)
 
     def __opencv_settings(self):
         settings_window = SettingsWindowOpenCV(self.__opencv_train_file, self.__scale_factor, self.__min_neighbors
@@ -136,8 +122,8 @@ class FaceDetection:
         self.__root = Tk()
         self.__root.geometry("793x409")
         self.__root.title("Face detection")
-        r = (self.__root.winfo_screenwidth() - 800) / 2
-        t = (self.__root.winfo_screenheight() - 400) / 2
+        r = (self.__root.winfo_screenwidth() - 768) / 2
+        t = (self.__root.winfo_screenheight() - 384) / 2
         self.__root.wm_geometry("+%d+%d" % (r, t))
         # self.__root.resizable(width=False, height=False)
         self.__root.iconphoto(True, ImageTk.PhotoImage(Image.open("app_icon.png")))
