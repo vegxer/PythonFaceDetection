@@ -1,6 +1,7 @@
 from tkinter import ttk
 from tkinter import *
 from PIL import ImageTk, Image
+from pathlib import Path
 
 
 class MainWindow:
@@ -15,7 +16,7 @@ class MainWindow:
         t = (self.window.winfo_screenheight() - 384) / 2
         self.window.wm_geometry("+%d+%d" % (r, t))
         # self.__root.resizable(width=False, height=False)
-        self.window.iconphoto(True, ImageTk.PhotoImage(Image.open(r"Images\app_icon.png")))
+        self.window.iconphoto(True, ImageTk.PhotoImage(Image.open(str(Path.cwd()) + "\\Images\\app_icon.png")))
 
     def init_menu(self):
         self.menubar = Menu(self.window)
@@ -61,6 +62,6 @@ class MainWindow:
 
         self.frame = Frame(self.my_canvas)
         self.my_canvas.create_window((0, 0), window=self.frame, anchor="nw")
-        self.start_image = ImageTk.PhotoImage(Image.open(r"Images\load_screen.png"))
+        self.start_image = ImageTk.PhotoImage(Image.open(str(Path.cwd()) + "\\Images\\load_screen.png"))
         self.picture_box = Label(self.frame, image=self.start_image)
         self.picture_box.pack()

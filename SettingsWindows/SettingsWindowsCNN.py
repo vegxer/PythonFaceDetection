@@ -2,7 +2,7 @@ from tkinter.ttk import Combobox
 from tkinter import *
 from tkinter import messagebox, filedialog
 import os.path
-
+from pathlib import Path
 
 class SettingsWindowCNN:
     def __init__(self, training_file, pooling_layers):
@@ -47,17 +47,19 @@ class SettingsWindowCNN:
 
     def __save_training_file(self, event):
         if self.list.current() == 2:
-            self.training_file = filedialog.askopenfilename(filetypes=[('.dat files', '*.dat')])
+            training_file = filedialog.askopenfilename(filetypes=[('.dat files', '*.dat')])
+            if training_file:
+                self.training_file = training_file
         elif self.list.current() == 1:
-            if os.path.exists("mmod_human_face_detector.dat"):
-                self.training_file = "mmod_human_face_detector.dat"
+            if os.path.exists("Training_files\\mmod_human_face_detector.dat"):
+                self.training_file = "Training_files\\mmod_human_face_detector.dat"
             else:
-                messagebox.showerror("File not found", "File \'mmod_human_face_detector.dat\' hasn't been found")
+                messagebox.showerror("File not found", f"File \'{str(Path.cwd())}\\Training_files\\mmod_human_face_detector.dat\' hasn't been found")
 
     def __set_saved_setting(self):
         if not self.training_file:
             self.list.current(0)
-        elif self.training_file == "mmod_human_face_detector.dat":
+        elif self.training_file == "Training_files\\mmod_human_face_detector.dat":
             self.list.current(1)
         else:
             self.list.current(2)

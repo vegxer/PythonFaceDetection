@@ -2,6 +2,8 @@ import os.path
 from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Combobox
+from pathlib import Path
+import cv2
 
 
 class SettingsWindowOpenCV:
@@ -64,7 +66,7 @@ class SettingsWindowOpenCV:
     def __set_saved_setting(self):
         if not self.xml_file:
             self.list.current(0)
-        elif self.xml_file == 'haarcascade_frontalface_alt.xml':
+        elif self.xml_file == str(Path.cwd()) + '\\Training_files\\haarcascade_frontalface_alt.xml':
             self.list.current(1)
         else:
             self.list.current(2)
@@ -84,10 +86,12 @@ class SettingsWindowOpenCV:
 
     def __choose_xml(self, event):
         if self.list.current() == 2:
-            self.xml_file = filedialog.askopenfilename(filetypes=[('.xml files', '*.xml')])
+            xml_file = filedialog.askopenfilename(filetypes=[('.xml files', '*.xml')])
+            if xml_file:
+                self.xml_file = xml_file
         elif self.list.current() == 1:
-            if os.path.exists("haarcascade_frontalface_alt.xml"):
-                self.xml_file = "haarcascade_frontalface_alt.xml"
+            if os.path.exists(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"):
+                self.xml_file = cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"
             else:
                 messagebox.showerror("File not found", "File \'haarcascade_frontalface_alt.xml\' hasn't been found")
 
@@ -134,6 +138,7 @@ class SettingsWindowOpenCV:
     def __save_min_size(self):
         try:
             self.min_size = self.text_min_size.get("1.0", END)
+            self.width_min = self.height_min = None
             if self.min_size != '\n':
                 if 'x' in self.min_size:
                     self.width_min = int(self.min_size[0:self.min_size.find('x')])
@@ -151,6 +156,7 @@ class SettingsWindowOpenCV:
     def __save_max_size(self):
         try:
             self.max_size = self.text_max_size.get("1.0", END)
+            self.width_max = self.height_max = None
             if self.max_size != '\n':
                 if 'x' in self.max_size:
                     self.width_max = int(self.max_size[0:self.max_size.find('x')])

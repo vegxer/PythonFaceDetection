@@ -1,10 +1,10 @@
-from SettingWindowHOG import SettingsWindowHOG
-from MTCNNDetector import MTCNNFaceDetection
-from HOGDetector import HOGFaceDetection
-from SettingsWindowOpenCV import SettingsWindowOpenCV
-from SettingsWindowsCNN import SettingsWindowCNN
-from OpenCVDetector import OpenCVFaceDetection
-from CNNDetector import CNNFaceDetection
+from DetectorsClasses.MTCNNDetector import MTCNNFaceDetection
+from DetectorsClasses.HOGDetector import HOGFaceDetection
+from DetectorsClasses.OpenCVDetector import OpenCVFaceDetection
+from DetectorsClasses.CNNDetector import CNNFaceDetection
+from SettingsWindows.SettingWindowHOG import SettingsWindowHOG
+from SettingsWindows.SettingsWindowOpenCV import SettingsWindowOpenCV
+from SettingsWindows.SettingsWindowsCNN import SettingsWindowCNN
 from SaveImage import SaveImage
 from MainWindowDesigner import MainWindow
 import numpy
@@ -68,8 +68,9 @@ class FaceDetection:
         self.graphics.picture_box.image = self.__image
 
     def display_source_image(self):
-        self.__image_name = filedialog.askopenfilename(filetypes=[('.jpg files', '*.jpg'), ('.png files', '*.png')])
-        if self.__image_name:
+        image_name = filedialog.askopenfilename(filetypes=[('.jpg files', '*.jpg'), ('.png files', '*.png')])
+        if image_name:
+            self.__image_name = image_name
             self.__image = Image.open(self.__image_name)
             self.__change_window()
             self.__image = ImageTk.PhotoImage(self.__image)
@@ -99,7 +100,7 @@ class FaceDetection:
         settings_window = SettingsWindowOpenCV(self.__opencv_train_file, self.__scale_factor, self.__min_neighbors
                                                , self.__min_window_width, self.__min_window_height,
                                                self.__max_window_width, self.__max_window_height)
-        settings_window.open_dialog(self.graphics)
+        settings_window.open_dialog(self.graphics.window)
         self.__opencv_train_file = settings_window.xml_file
         self.__scale_factor = settings_window.scale_factor
         self.__min_neighbors = settings_window.min_neighbors
@@ -110,11 +111,11 @@ class FaceDetection:
 
     def cnn_settings(self):
         settings_window = SettingsWindowCNN(self.__cnn_train_file, self.__pooling_layers)
-        settings_window.open_dialog(self.graphics)
+        settings_window.open_dialog(self.graphics.window)
         self.__pooling_layers = settings_window.pooling_layers
         self.__cnn_train_file = settings_window.training_file
 
     def hog_settings(self):
         settings_window = SettingsWindowHOG(self.__upsampling_number)
-        settings_window.open_dialog(self.graphics)
+        settings_window.open_dialog(self.graphics.window)
         self.__upsampling_number = settings_window.upsampling_number
