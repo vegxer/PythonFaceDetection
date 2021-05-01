@@ -10,7 +10,7 @@ class SettingsWindowHOG:
         self.settings = Toplevel()
         self.settings.protocol("WM_DELETE_WINDOW", self.__on_closing)
         self.settings.geometry("380x70")
-        self.settings.title("CNN Settings")
+        self.settings.title("HOG Settings")
         r = (self.settings.winfo_screenwidth() - self.settings.winfo_reqwidth()) / 2.5
         t = (self.settings.winfo_screenheight() - self.settings.winfo_reqheight()) / 2.5
         self.settings.wm_geometry("+%d+%d" % (r, t))

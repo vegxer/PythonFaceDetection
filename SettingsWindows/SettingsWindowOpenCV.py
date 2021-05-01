@@ -66,7 +66,7 @@ class SettingsWindowOpenCV:
     def __set_saved_setting(self):
         if not self.xml_file:
             self.list.current(0)
-        elif self.xml_file == str(Path.cwd()) + '\\Training_files\\haarcascade_frontalface_alt.xml':
+        elif self.xml_file == cv2.data.haarcascades + "haarcascade_frontalface_alt.xml":
             self.list.current(1)
         else:
             self.list.current(2)
@@ -90,10 +90,10 @@ class SettingsWindowOpenCV:
             if xml_file:
                 self.xml_file = xml_file
         elif self.list.current() == 1:
-            if os.path.exists(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"):
-                self.xml_file = cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"
-            else:
-                messagebox.showerror("File not found", "File \'haarcascade_frontalface_alt.xml\' hasn't been found")
+            # if os.path.exists(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"):
+            self.xml_file = cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"
+            # else:
+                # messagebox.showerror("File not found", "File \'haarcascade_frontalface_alt.xml\' hasn't been found")
 
     def __save_settings(self):
         scale_factor_error = self.__save_scale_factor()
