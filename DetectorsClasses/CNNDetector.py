@@ -1,7 +1,6 @@
 import dlib
 import cv2
 import os.path
-from numpy import ndarray
 from tkinter import messagebox
 import time
 
