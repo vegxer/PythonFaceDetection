@@ -1,6 +1,6 @@
+import facenet_pytorch
 import cv2
 import os.path
-from facenet_pytorch import MTCNN
 import torch
 from tkinter import messagebox
 import time
@@ -16,9 +16,9 @@ class MTCNNFaceDetection:
         if self.__are_all_variables_set():
             self.__img = cv2.cvtColor(cv2.imread(self.__image_name), cv2.COLOR_BGR2RGB)
             device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-            mtcnn = MTCNN(keep_all=True, device=device)
+            self.__mtcnn_detector = facenet_pytorch.MTCNN(keep_all=True, device=device)
             start = time.time()
-            faces, _ = mtcnn.detect(self.__img)
+            faces, _ = self.__mtcnn_detector.detect(self.__img)
             end = time.time()
             if faces is not None:
                 for face in faces:

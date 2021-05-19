@@ -1,6 +1,6 @@
 import dlib
 import cv2
-import os.path
+import os
 from tkinter import messagebox
 import time
 
@@ -16,9 +16,9 @@ class CNNFaceDetection:
         end = start = 0
         if self.__are_all_variables_set():
             self.__img = dlib.load_rgb_image(self.__image_name)
-            cnn_face_detector = dlib.cnn_face_detection_model_v1(self.__training_file)
+            self.__cnn_face_detector = dlib.cnn_face_detection_model_v1(self.__training_file)
             start = time.time()
-            faces = cnn_face_detector(self.__img, self.__pooling_layers)
+            faces = self.__cnn_face_detector(self.__img, self.__pooling_layers)
             end = time.time()
             for face in faces:
                 x = face.rect.left()

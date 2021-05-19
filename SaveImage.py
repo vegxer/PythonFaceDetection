@@ -1,5 +1,5 @@
 import cv2
-from pathlib import Path
+import pathlib
 from tkinter import filedialog, NONE, messagebox
 
 
@@ -9,7 +9,7 @@ class SaveImage:
         if SaveImage.__image_correct(img, face_found):
             file_name = filedialog.asksaveasfilename()
             if file_name:
-                cv2.imwrite(file_name + Path(image_name).suffix, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+                cv2.imwrite(file_name + pathlib.Path(image_name).suffix, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 
     @staticmethod
     def save(image_name, img, face_found):

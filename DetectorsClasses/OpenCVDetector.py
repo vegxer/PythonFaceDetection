@@ -24,11 +24,11 @@ class OpenCVFaceDetection:
     def detect_face(self):
         start = end = 0
         if self.__are_all_variables_set():
-            face_cascade = cv2.CascadeClassifier(self.__xml_file)
+            self.__face_cascade = cv2.CascadeClassifier(self.__xml_file)
             self.__img = cv2.imread(self.__image_name)
-            gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
+            self.__gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
             start = time.time()
-            faces = self.__detect_faces(face_cascade, gray)
+            faces = self.__detect_faces()
             end = time.time()
             for (x, y, w, h) in faces:
                 cv2.rectangle(self.__img, (x, y), (x + w, y + h), (0, 0, 255), 1)
@@ -36,22 +36,22 @@ class OpenCVFaceDetection:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
         return self.__img, end - start
 
-    def __detect_faces(self, face_cascade, gray):
+    def __detect_faces(self):
         if self.__min_window_width and self.__max_window_width:
-            return face_cascade.detectMultiScale(gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                  minNeighbors=self.__min_neighbors,
                                                  minSize=(self.__min_window_width, self.__min_window_height),
                                                  maxSize=(self.__max_window_width, self.__max_window_height))
         elif self.__min_window_width:
-            return face_cascade.detectMultiScale(gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                  minNeighbors=self.__min_neighbors,
                                                  minSize=(self.__min_window_width, self.__min_window_height))
         elif self.__max_window_width:
-            return face_cascade.detectMultiScale(gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                  minNeighbors=self.__min_neighbors,
                                                  maxSize=(self.__max_window_width, self.__max_window_height))
         else:
-            return face_cascade.detectMultiScale(gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                  minNeighbors=self.__min_neighbors)
 
     def set_image_path(self, path):

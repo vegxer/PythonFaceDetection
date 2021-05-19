@@ -1,6 +1,6 @@
 import dlib
 import cv2
-import os.path
+import os
 from tkinter import messagebox
 import time
 
@@ -15,9 +15,9 @@ class HOGFaceDetection:
         end = start = 0
         if self.__are_all_variables_set():
             self.__img = dlib.load_rgb_image(self.__image_name)
-            hog_face_detector = dlib.get_frontal_face_detector()
+            self.__hog_face_detector = dlib.get_frontal_face_detector()
             start = time.time()
-            faces = hog_face_detector(self.__img, self.__upsampling_number)
+            faces = self.__hog_face_detector(self.__img, self.__upsampling_number)
             end = time.time()
             for face in faces:
                 x = face.left()
