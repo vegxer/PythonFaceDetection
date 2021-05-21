@@ -9,7 +9,7 @@ class SettingsWindowHOG(SettingsWindow):
 
     def open_dialog(self, root):
         super()._init_window()
-        self._settings.protocol("WM_DELETE_WINDOW", self._on_closing)
+        self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("380x70")
         self._settings.title("HOG Settings")
         r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
@@ -28,11 +28,6 @@ class SettingsWindowHOG(SettingsWindow):
         self._settings.transient(root)
         self._settings.grab_set()
         self._settings.mainloop()
-
-    def _on_closing(self):
-        self._settings.grab_release()
-        self._settings.quit()
-        self._settings.destroy()
 
     def _set_saved_settings(self):
         if self.upsampling_number != None:

@@ -10,7 +10,7 @@ class HaarCascadeFaceDetection(Detector):
                  max_window_width=None, max_window_height=None):
         super().__init__(image_name)
         self.__xml_file = self.__scale_factor = self.__min_neighbors = None
-        self.set_image_path(image_name)
+        super().set_image_path(image_name)
         self.set_training_file(xml_file)
         self.set_scale_factor(scale_factor)
         self.set_min_neighbors(min_neighbors)
@@ -24,46 +24,38 @@ class HaarCascadeFaceDetection(Detector):
             self.set_min_size('{}x{}'.format(min_window_width, min_window_height))
 
     def detect_face(self):
+        img = None
         start = end = 0
         if self._are_all_variables_set():
-            self.__face_cascade = cv2.CascadeClassifier(self.__xml_file)
-            self._img = cv2.imread(self._image_name)
-            self.__gray = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+            self._face_cascade = cv2.CascadeClassifier(self.__xml_file)
+            img = cv2.imread(self._image_name)
+            self.__gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             start = time.time()
             faces = self.__detect_faces()
             end = time.time()
             for (x, y, w, h) in faces:
-                cv2.rectangle(self._img, (x, y), (x + w, y + h), (0, 0, 255), 1)
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
-        return self._img, end - start
+        return img, end - start
 
     def __detect_faces(self):
         if self.__min_window_width and self.__max_window_width:
-            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                        minNeighbors=self.__min_neighbors,
-                                                        minSize=(self.__min_window_width, self.__min_window_height),
-                                                        maxSize=(self.__max_window_width, self.__max_window_height))
+            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+                                                       minNeighbors=self.__min_neighbors,
+                                                       minSize=(self.__min_window_width, self.__min_window_height),
+                                                       maxSize=(self.__max_window_width, self.__max_window_height))
         elif self.__min_window_width:
-            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                        minNeighbors=self.__min_neighbors,
-                                                        minSize=(self.__min_window_width, self.__min_window_height))
+            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+                                                       minNeighbors=self.__min_neighbors,
+                                                       minSize=(self.__min_window_width, self.__min_window_height))
         elif self.__max_window_width:
-            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                        minNeighbors=self.__min_neighbors,
-                                                        maxSize=(self.__max_window_width, self.__max_window_height))
+            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+                                                       minNeighbors=self.__min_neighbors,
+                                                       maxSize=(self.__max_window_width, self.__max_window_height))
         else:
-            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                        minNeighbors=self.__min_neighbors)
-
-    def set_image_path(self, path):
-        if os.path.exists(str(path)):
-            self._image_name = path
-        else:
-            messagebox.showerror("File error", "Image is not uploaded")
-
-    def get_image_path(self):
-        return self._image_name
+            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+                                                       minNeighbors=self.__min_neighbors)
 
     def set_training_file(self, path):
         if os.path.exists(str(path)):

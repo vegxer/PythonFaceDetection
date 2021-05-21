@@ -18,7 +18,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
 
     def open_dialog(self, root):
         super()._init_window()
-        self._settings.protocol("WM_DELETE_WINDOW", self._on_closing)
+        self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("420x200")
         self._settings.title("Haar cascade Settings")
         r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
@@ -77,11 +77,6 @@ class SettingsWindowHaarCascade(SettingsWindow):
             self.__text_max_size.insert(1.0, str(self.width_max) + 'x' + str(self.height_max))
         if self.width_min and self.height_min:
             self.__text_min_size.insert(1.0, str(self.width_min) + 'x' + str(self.height_min))
-
-    def _on_closing(self):
-        self._settings.grab_release()
-        self._settings.quit()
-        self._settings.destroy()
 
     def __choose_xml(self, event):
         if self.__list.current() == 2:

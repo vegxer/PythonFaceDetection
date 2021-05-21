@@ -1,10 +1,11 @@
-from abc import abstractmethod, abstractproperty
+from abc import abstractmethod
+import os
+from tkinter import messagebox
 
 
 class Detector:
 
     def __init__(self, image_name):
-        self._img = self._face_detector = None
         self._image_name = image_name
 
     @abstractmethod
@@ -15,10 +16,11 @@ class Detector:
     def _are_all_variables_set(self):
         pass
 
-    @abstractproperty
     def get_image_path(self):
-        pass
+        return self._image_name
 
-    @abstractproperty
     def set_image_path(self, path):
-        pass
+        if os.path.exists(str(path)):
+            self._image_name = path
+        else:
+            messagebox.showerror("File error", "Image is not found")

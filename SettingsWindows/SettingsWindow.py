@@ -2,11 +2,12 @@ from abc import abstractmethod
 import tkinter
 
 
-class SettingsWindow():
+class SettingsWindow:
 
-    @abstractmethod
     def _on_closing(self):
-        pass
+        self._settings.grab_release()
+        self._settings.quit()
+        self._settings.destroy()
 
     @abstractmethod
     def _save_settings(self):

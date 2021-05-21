@@ -13,7 +13,7 @@ class SettingsWindowCNN(SettingsWindow):
 
     def open_dialog(self, root):
         super()._init_window()
-        self._settings.protocol("WM_DELETE_WINDOW", self._on_closing)
+        self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("400x100")
         self._settings.title("CNN Settings")
         r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
@@ -41,11 +41,6 @@ class SettingsWindowCNN(SettingsWindow):
         self._settings.transient(root)
         self._settings.grab_set()
         self._settings.mainloop()
-
-    def _on_closing(self):
-        self._settings.grab_release()
-        self._settings.quit()
-        self._settings.destroy()
 
     def __save_training_file(self, event):
         if self.__list.current() == 2:
