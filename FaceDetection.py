@@ -1,9 +1,9 @@
 from DetectorsClasses.MTCNNDetector import MTCNNFaceDetection
 from DetectorsClasses.HOGDetector import HOGFaceDetection
-from DetectorsClasses.OpenCVDetector import OpenCVFaceDetection
+from DetectorsClasses.OpenCVDetector import HaarCascadeFaceDetection
 from DetectorsClasses.CNNDetector import CNNFaceDetection
 from SettingsWindows.SettingsWindowHOG import SettingsWindowHOG
-from SettingsWindows.SettingsWindowOpenCV import SettingsWindowOpenCV
+from SettingsWindows.SettingsWindowOpenCV import SettingsWindowHaarCascade
 from SettingsWindows.SettingsWindowCNN import SettingsWindowCNN
 from SaveImage import SaveImage
 from MainWindowDesigner import MainWindow
@@ -18,47 +18,47 @@ class FaceDetection:
     def __init__(self):
         self.__graphics = MainWindow()
         self.__image = tkinter.NONE
-        self.__img = self.__image_name = self.__cnn_settings = self.__hog_settings = self.__haar_settings =\
-            self.__opencv_detector = self.__cnn_detector = self.__hog_detector = self.__mtcnn_detector = None
+        self.__img = self.__image_name = self.__cnn_settings_form = self.__hog_settings_form = self.__haar_settings_form =\
+            self.__haar_detector = self.__cnn_detector = self.__hog_detector = self.__mtcnn_detector = None
         self.__face_found = False
 
     def open(self):
         self.__graphics.init_root()
         self.__graphics.init_menu(self.__display_source_image, self.__save_image, self.__save_image_as,
                                   self.__opencv_settings, self.__cnn_settings, self.__hog_settings,
-                                  self.__opencv_detection, self.__cnn_detection, self.__hog_detection,
+                                  self.__haar_cascade_detection, self.__cnn_detection, self.__hog_detection,
                                   self.__mtcnn_detection)
         self.__graphics.init_picture_box()
         self.__graphics.window.mainloop()
 
-    def __opencv_detection(self):
-        if self.__haar_settings == None:
+    def __haar_cascade_detection(self):
+        if self.__haar_settings_form == None:
             messagebox.showerror("Settings error", "Settings are not set")
         else:
-            self.__opencv_detector = OpenCVFaceDetection(self.__image_name, self.__haar_settings.xml_file, self.__haar_settings.scale_factor,
-                                                        self.__haar_settings.min_neighbors, self.__haar_settings.width_min, self.__haar_settings.height_min
-                                                         , self.__haar_settings.width_max, self.__haar_settings.height_max)
-            self.__img, exec_time = self.__opencv_detector.detect_face()
+            self.__haar_detector = HaarCascadeFaceDetection(self.__image_name, self.__haar_settings_form.xml_file, self.__haar_settings_form.scale_factor,
+                                                       self.__haar_settings_form.min_neighbors, self.__haar_settings_form.width_min, self.__haar_settings_form.height_min
+                                                       , self.__haar_settings_form.width_max, self.__haar_settings_form.height_max)
+            self.__img, exec_time = self.__haar_detector.detect_face()
             if type(self.__img) is numpy.ndarray:
                 self.__img = cv2.cvtColor(self.__img, cv2.COLOR_BGR2RGB)
                 self.__show_image()
                 messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __cnn_detection(self):
-        if self.__cnn_settings == None:
+        if self.__cnn_settings_form == None:
             messagebox.showerror("Settings error", "Settings are not set")
         else:
-            self.__cnn_detector = CNNFaceDetection(self.__image_name, self.__cnn_settings.training_file, self.__cnn_settings.pooling_layers)
+            self.__cnn_detector = CNNFaceDetection(self.__image_name, self.__cnn_settings_form.training_file, self.__cnn_settings_form.pooling_layers)
             self.__img, exec_time = self.__cnn_detector.detect_face()
             if type(self.__img) is numpy.ndarray:
                 self.__show_image()
                 messagebox.showinfo("Detection time", f"Detection time: {round(exec_time, 6)} seconds")
 
     def __hog_detection(self):
-        if self.__hog_settings == None:
+        if self.__hog_settings_form == None:
             messagebox.showerror("Settings error", "Settings are not set")
         else:
-            self.__hog_detector = HOGFaceDetection(self.__image_name, self.__hog_settings.upsampling_number)
+            self.__hog_detector = HOGFaceDetection(self.__image_name, self.__hog_settings_form.upsampling_number)
             self.__img, exec_time = self.__hog_detector.detect_face()
             if type(self.__img) is numpy.ndarray:
                 self.__show_image()
@@ -108,16 +108,16 @@ class FaceDetection:
         SaveImage.save(self.__image_name, self.__img, self.__face_found)
 
     def __opencv_settings(self):
-        if self.__haar_settings == None:
-            self.__haar_settings = SettingsWindowOpenCV()
-        self.__haar_settings.open_dialog(self.__graphics.window)
+        if self.__haar_settings_form == None:
+            self.__haar_settings_form = SettingsWindowHaarCascade()
+        self.__haar_settings_form.open_dialog(self.__graphics.window)
 
     def __cnn_settings(self):
-        if self.__cnn_settings == None:
-            self.__cnn_settings = SettingsWindowCNN()
-        self.__cnn_settings.open_dialog(self.__graphics.window)
+        if self.__cnn_settings_form == None:
+            self.__cnn_settings_form = SettingsWindowCNN()
+        self.__cnn_settings_form.open_dialog(self.__graphics.window)
 
     def __hog_settings(self):
-        if self.__hog_settings == None:
-            self.__hog_settings = SettingsWindowHOG()
-        self.__hog_settings.open_dialog(self.__graphics.window)
+        if self.__hog_settings_form == None:
+            self.__hog_settings_form = SettingsWindowHOG()
+        self.__hog_settings_form.open_dialog(self.__graphics.window)

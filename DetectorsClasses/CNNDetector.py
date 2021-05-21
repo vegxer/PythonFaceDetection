@@ -3,22 +3,24 @@ import cv2
 import os
 from tkinter import messagebox
 import time
+from DetectorsClasses.Detector import Detector
 
 
-class CNNFaceDetection:
+class CNNFaceDetection(Detector):
     def __init__(self, image_name, training_file, pooling_layers):
-        self.__img = self.__training_file = self.__pooling_layers = self.__image_name = None
+        super().__init__(image_name)
+        self.__training_file = self.__pooling_layers = None
         self.set_training_file(training_file)
         self.set_pooling_layers(pooling_layers)
         self.set_image_path(image_name)
 
     def detect_face(self):
         end = start = 0
-        if self.__are_all_variables_set():
-            self.__img = dlib.load_rgb_image(self.__image_name)
-            self.__cnn_face_detector = dlib.cnn_face_detection_model_v1(self.__training_file)
+        if self._are_all_variables_set():
+            self._img = dlib.load_rgb_image(self._image_name)
+            self._face_detector = dlib.cnn_face_detection_model_v1(self.__training_file)
             start = time.time()
-            faces = self.__cnn_face_detector(self.__img, self.__pooling_layers)
+            faces = self._face_detector(self._img, self.__pooling_layers)
             end = time.time()
             for face in faces:
                 x = face.rect.left()
@@ -27,19 +29,19 @@ class CNNFaceDetection:
                 h = face.rect.bottom() - y
 
                 # draw box over face
-                cv2.rectangle(self.__img, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                cv2.rectangle(self._img, (x, y), (x + w, y + h), (255, 0, 0), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
-        return self.__img, end - start
+        return self._img, end - start
 
     def set_image_path(self, path):
         if os.path.exists(str(path)):
-            self.__image_name = path
+            self._image_name = path
         else:
             messagebox.showerror("File error", "Image is not uploaded")
 
     def get_image_path(self):
-        return self.__image_name
+        return self._image_name
 
     def set_training_file(self, file):
         if os.path.exists(str(file)):
@@ -62,5 +64,5 @@ class CNNFaceDetection:
     def get_pooling_layers(self):
         return self.__pooling_layers
 
-    def __are_all_variables_set(self):
-        return self.__image_name and self.__pooling_layers != None and self.__training_file
+    def _are_all_variables_set(self):
+        return self._image_name and self.__pooling_layers != None and self.__training_file

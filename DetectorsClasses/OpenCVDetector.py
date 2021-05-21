@@ -2,12 +2,14 @@ from tkinter import messagebox
 import cv2
 import os.path
 import time
+from DetectorsClasses.Detector import Detector
 
 
-class OpenCVFaceDetection:
+class HaarCascadeFaceDetection(Detector):
     def __init__(self, image_name, xml_file, scale_factor, min_neighbors, min_window_width=None, min_window_height=None,
                  max_window_width=None, max_window_height=None):
-        self.__img = self.__image_name = self.__xml_file = self.__scale_factor = self.__min_neighbors = None
+        super().__init__(image_name)
+        self.__xml_file = self.__scale_factor = self.__min_neighbors = None
         self.set_image_path(image_name)
         self.set_training_file(xml_file)
         self.set_scale_factor(scale_factor)
@@ -23,45 +25,45 @@ class OpenCVFaceDetection:
 
     def detect_face(self):
         start = end = 0
-        if self.__are_all_variables_set():
+        if self._are_all_variables_set():
             self.__face_cascade = cv2.CascadeClassifier(self.__xml_file)
-            self.__img = cv2.imread(self.__image_name)
-            self.__gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
+            self._img = cv2.imread(self._image_name)
+            self.__gray = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
             start = time.time()
             faces = self.__detect_faces()
             end = time.time()
             for (x, y, w, h) in faces:
-                cv2.rectangle(self.__img, (x, y), (x + w, y + h), (0, 0, 255), 1)
+                cv2.rectangle(self._img, (x, y), (x + w, y + h), (0, 0, 255), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
-        return self.__img, end - start
+        return self._img, end - start
 
     def __detect_faces(self):
         if self.__min_window_width and self.__max_window_width:
             return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                 minNeighbors=self.__min_neighbors,
-                                                 minSize=(self.__min_window_width, self.__min_window_height),
-                                                 maxSize=(self.__max_window_width, self.__max_window_height))
+                                                        minNeighbors=self.__min_neighbors,
+                                                        minSize=(self.__min_window_width, self.__min_window_height),
+                                                        maxSize=(self.__max_window_width, self.__max_window_height))
         elif self.__min_window_width:
             return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                 minNeighbors=self.__min_neighbors,
-                                                 minSize=(self.__min_window_width, self.__min_window_height))
+                                                        minNeighbors=self.__min_neighbors,
+                                                        minSize=(self.__min_window_width, self.__min_window_height))
         elif self.__max_window_width:
             return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                 minNeighbors=self.__min_neighbors,
-                                                 maxSize=(self.__max_window_width, self.__max_window_height))
+                                                        minNeighbors=self.__min_neighbors,
+                                                        maxSize=(self.__max_window_width, self.__max_window_height))
         else:
             return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
-                                                 minNeighbors=self.__min_neighbors)
+                                                        minNeighbors=self.__min_neighbors)
 
     def set_image_path(self, path):
         if os.path.exists(str(path)):
-            self.__image_name = path
+            self._image_name = path
         else:
             messagebox.showerror("File error", "Image is not uploaded")
 
     def get_image_path(self):
-        return self.__image_name
+        return self._image_name
 
     def set_training_file(self, path):
         if os.path.exists(str(path)):
@@ -100,7 +102,8 @@ class OpenCVFaceDetection:
         try:
             width = int(size[0:size.find('x')])
             height = int(size[size.find('x') + 1:])
-            if width < 1 or height < 1 or (self.__max_window_width != None and self.__max_window_height < height and self.__max_window_width < width):
+            if width < 1 or height < 1 or (
+                    self.__max_window_width != None and self.__max_window_height < height and self.__max_window_width < width):
                 messagebox.showerror("Value error", "Variable \'min_size\' is out of range")
             self.__min_window_width = width
             self.__min_window_height = height
@@ -114,7 +117,8 @@ class OpenCVFaceDetection:
         try:
             width = int(size[0:size.find('x')])
             height = int(size[size.find('x') + 1:])
-            if width < 1 or height < 1 or (self.__min_window_width != None and self.__min_window_height > height and self.__min_window_width > width):
+            if width < 1 or height < 1 or (
+                    self.__min_window_width != None and self.__min_window_height > height and self.__min_window_width > width):
                 messagebox.showerror("Value error", "Variable \'max_size\' is out of range")
             self.__max_window_width = width
             self.__max_window_height = height
@@ -124,5 +128,5 @@ class OpenCVFaceDetection:
     def get_max_size(self):
         return self.__max_window_width, self.__max_window_height
 
-    def __are_all_variables_set(self):
-        return self.__image_name and self.__xml_file and self.__scale_factor and self.__min_neighbors
+    def _are_all_variables_set(self):
+        return self._image_name and self.__xml_file and self.__scale_factor and self.__min_neighbors
