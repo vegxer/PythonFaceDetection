@@ -5,6 +5,7 @@ import time
 from DetectorsClasses.Detector import Detector
 
 
+# класс для обнаружения лиц методом каскадов Хаара
 class HaarCascadeFaceDetection(Detector):
     def __init__(self, image_name, xml_file, scale_factor, min_neighbors, min_window_width=None, min_window_height=None,
                  max_window_width=None, max_window_height=None):
@@ -27,34 +28,39 @@ class HaarCascadeFaceDetection(Detector):
         img = None
         start = end = 0
         if self._are_all_variables_set():
-            self._face_cascade = cv2.CascadeClassifier(self.__xml_file)
+            self.__face_cascade = cv2.CascadeClassifier(self.__xml_file)
+            # загрузка изображения
             img = cv2.imread(self._image_name)
+            # перевод изоражения в цвет cv2.gray
             self.__gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            # замер времени выполнения алгоритма
             start = time.time()
             faces = self.__detect_faces()
             end = time.time()
+            # рисует прямоугольники вокруг лиц
             for (x, y, w, h) in faces:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
         else:
             messagebox.showerror("Settings error", "Detection is not available due to settings")
         return img, end - start
 
+    # в зависимости от введённых параметров метода обнаруживает лица на изображении
     def __detect_faces(self):
         if self.__min_window_width and self.__max_window_width:
-            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                        minNeighbors=self.__min_neighbors,
                                                        minSize=(self.__min_window_width, self.__min_window_height),
                                                        maxSize=(self.__max_window_width, self.__max_window_height))
         elif self.__min_window_width:
-            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                        minNeighbors=self.__min_neighbors,
                                                        minSize=(self.__min_window_width, self.__min_window_height))
         elif self.__max_window_width:
-            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                        minNeighbors=self.__min_neighbors,
                                                        maxSize=(self.__max_window_width, self.__max_window_height))
         else:
-            return self._face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
+            return self.__face_cascade.detectMultiScale(self.__gray, scaleFactor=self.__scale_factor,
                                                        minNeighbors=self.__min_neighbors)
 
     def set_training_file(self, path):

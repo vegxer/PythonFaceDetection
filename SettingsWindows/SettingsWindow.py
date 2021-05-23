@@ -2,8 +2,9 @@ from abc import abstractmethod
 import tkinter
 
 
+# класс, от которого наследуются все классы, обеспечивающие найстроки и их интерфейс
 class SettingsWindow:
-
+    # при закрытии окна, уничтожить всё
     def _on_closing(self):
         self._settings.grab_release()
         self._settings.quit()
@@ -21,6 +22,7 @@ class SettingsWindow:
     def open_dialog(self, root):
         pass
 
+    # инициализация окна (_settings) с кнопкой "Save settings"
     def _init_window(self):
         self._settings = tkinter.Toplevel()
         self._button_confirm = tkinter.Button(self._settings, text="Save settings", font="Arial 11",

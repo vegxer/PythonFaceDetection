@@ -3,6 +3,7 @@ import os
 from tkinter import messagebox
 
 
+# класс, от которого наследуются все классы детекторов лиц
 class Detector:
 
     def __init__(self, image_name):
@@ -20,6 +21,7 @@ class Detector:
         return self._image_name
 
     def set_image_path(self, path):
+        # если такой путь существует
         if os.path.exists(str(path)):
             self._image_name = path
         else:

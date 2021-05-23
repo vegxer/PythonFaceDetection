@@ -5,6 +5,7 @@ import cv2
 from SettingsWindows.SettingsWindow import SettingsWindow
 
 
+# класс, создающий и управляющий окном настроек для метода HOG
 class SettingsWindowHaarCascade(SettingsWindow):
     def __init__(self, xml_file=None, scale_factor=None, min_neighbors=None, min_window_width=None,
                  min_window_height=None, max_window_width=None, max_window_height=None):
@@ -16,8 +17,10 @@ class SettingsWindowHaarCascade(SettingsWindow):
         self.height_max = max_window_height
         self.width_max = max_window_width
 
+    # создание окна
     def open_dialog(self, root):
         super()._init_window()
+        # событие на закрытие окна
         self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("420x200")
         self._settings.title("Haar cascade Settings")
@@ -31,6 +34,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
         self.__list = ttk.Combobox(self._settings,
                                    value=("...", "Standard haar cascade file", "Choose .xml from computer..."),
                                    width=25)
+        # установка обработчика события
         self.__list.bind("<<ComboboxSelected>>", self.__choose_xml)
         self.__list.current(0)
         self.__list.place(x=180, y=3)
@@ -62,6 +66,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
         self._settings.grab_set()
         self._settings.mainloop()
 
+    # выставление сохранённых настроек, оставшихся с прошлого открытия окна
     def _set_saved_settings(self):
         if not self.xml_file:
             self.__list.current(0)
@@ -78,31 +83,36 @@ class SettingsWindowHaarCascade(SettingsWindow):
         if self.width_min and self.height_min:
             self.__text_min_size.insert(1.0, str(self.width_min) + 'x' + str(self.height_min))
 
+    # обработчик события выбора из списка комбобокса
     def __choose_xml(self, event):
+        # выбор файла с компьютера
         if self.__list.current() == 2:
             xml_file = filedialog.askopenfilename(filetypes=[('.xml files', '*.xml')])
             if xml_file:
                 self.xml_file = xml_file
+        # выбор стандартного файла
         elif self.__list.current() == 1:
-            # if os.path.exists(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"):
             self.xml_file = cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"
-            # else:
-            # messagebox.showerror("File not found", "File \'haarcascade_frontalface_alt.xml\' hasn't been found")
 
+    # сохранение настроек
     def _save_settings(self):
+        # ошибки при сохранение настроек
         scale_factor_error = self.__save_scale_factor()
         min_neighbors_error = self.__save_min_neighbors()
         min_size_error = self.__save_min_size()
         max_size_error = self.__save_max_size()
+        # если ошибок нет
         if not (scale_factor_error or min_neighbors_error or min_size_error or max_size_error):
             messagebox.showinfo("Settings save",
                                 "Settings have been saved successfully\nYou may close settings window or make changes")
+        # если есть хотя бы одна ошибка
         else:
             messagebox.showinfo("Settings save",
                                 "All correct settings are saved\nYou may close settings window or make changes")
 
     def __save_scale_factor(self):
         try:
+            # если scale_factor - целое число
             self.scale_factor = float(self.__text_scale.get("1.0", tkinter.END))
             if self.scale_factor < 1.001 or self.scale_factor > 2:
                 messagebox.showerror("Scale factor error", "Argument \'Scale factor\' is out of range")
@@ -116,6 +126,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
 
     def __save_min_neighbors(self):
         try:
+            # min_neighbors - целое число
             self.min_neighbors = int(self.__text_neighbors.get("1.0", tkinter.END))
             if (int(self.min_neighbors) != float(self.min_neighbors) or self.min_neighbors < 1
                     or self.min_neighbors > 1000):
@@ -133,7 +144,9 @@ class SettingsWindowHaarCascade(SettingsWindow):
         try:
             self.min_size = self.__text_min_size.get("1.0", tkinter.END)
             self.width_min = self.height_min = None
+            # если поле не пустое
             if self.min_size != '\n':
+                # если в размере есть символ 'x'
                 if 'x' in self.min_size:
                     self.width_min = int(self.min_size[0:self.min_size.find('x')])
                     self.height_min = int(self.min_size[self.min_size.find('x') + 1:])
@@ -151,6 +164,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
         try:
             self.max_size = self.__text_max_size.get("1.0", tkinter.END)
             self.width_max = self.height_max = None
+            # если поле не пустое
             if self.max_size != '\n':
                 if 'x' in self.max_size:
                     self.width_max = int(self.max_size[0:self.max_size.find('x')])
