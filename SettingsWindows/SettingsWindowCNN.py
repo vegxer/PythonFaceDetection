@@ -19,8 +19,8 @@ class SettingsWindowCNN(SettingsWindow):
         self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("400x100")
         self._settings.title("CNN Settings")
-        r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
-        t = (self._settings.winfo_screenheight() - self._settings.winfo_reqheight()) / 2.5
+        r = (self._settings.winfo_screenwidth() - 400) / 2
+        t = (self._settings.winfo_screenheight() - 100) / 2
         self._settings.wm_geometry("+%d+%d" % (r, t))
         self._settings.resizable(width=False, height=False)
 
@@ -80,7 +80,7 @@ class SettingsWindowCNN(SettingsWindow):
             # если pooling_layers - целое число
             self.pooling_layers = int(self.__text_scale.get("1.0", tkinter.END))
             if self.pooling_layers < 0 or self.pooling_layers > 3:
-                messagebox.showerror("Pooling layers error", "Argument \'Scale factor\' is out of range")
+                messagebox.showerror("Pooling layers error", "Argument \'Pooling layers\' is out of range")
                 self.pooling_layers = None
             else:
                 messagebox.showinfo("Settings save",

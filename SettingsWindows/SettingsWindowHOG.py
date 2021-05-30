@@ -15,8 +15,8 @@ class SettingsWindowHOG(SettingsWindow):
         self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("380x70")
         self._settings.title("HOG Settings")
-        r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
-        t = (self._settings.winfo_screenheight() - self._settings.winfo_reqheight()) / 2.5
+        r = (self._settings.winfo_screenwidth() - 380) / 2
+        t = (self._settings.winfo_screenheight() - 70) / 2
         self._settings.wm_geometry("+%d+%d" % (r, t))
         self._settings.resizable(width=False, height=False)
 

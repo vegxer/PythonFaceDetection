@@ -5,7 +5,7 @@ import cv2
 from SettingsWindows.SettingsWindow import SettingsWindow
 
 
-# класс, создающий и управляющий окном настроек для метода HOG
+# класс, создающий и управляющий окном настроек для метода Виолы-Джонса
 class SettingsWindowHaarCascade(SettingsWindow):
     def __init__(self, xml_file=None, scale_factor=None, min_neighbors=None, min_window_width=None,
                  min_window_height=None, max_window_width=None, max_window_height=None):
@@ -24,8 +24,8 @@ class SettingsWindowHaarCascade(SettingsWindow):
         self._settings.protocol("WM_DELETE_WINDOW", super()._on_closing)
         self._settings.geometry("420x200")
         self._settings.title("Haar cascade Settings")
-        r = (self._settings.winfo_screenwidth() - self._settings.winfo_reqwidth()) / 2.5
-        t = (self._settings.winfo_screenheight() - self._settings.winfo_reqheight()) / 2.5
+        r = (self._settings.winfo_screenwidth() - 420) / 2
+        t = (self._settings.winfo_screenheight() - 200) / 2
         self._settings.wm_geometry("+%d+%d" % (r, t))
         self._settings.resizable(width=False, height=False)
 
