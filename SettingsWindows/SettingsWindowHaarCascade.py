@@ -1,7 +1,6 @@
 import tkinter
 from tkinter import filedialog, messagebox
 from tkinter import ttk
-import cv2
 from SettingsWindows.SettingsWindow import SettingsWindow
 
 
@@ -70,7 +69,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
     def _set_saved_settings(self):
         if not self.xml_file:
             self.__list.current(0)
-        elif self.xml_file == cv2.data.haarcascades + "haarcascade_frontalface_alt.xml":
+        elif self.xml_file == "Training_files\\haarcascade_frontalface_alt.xml":
             self.__list.current(1)
         else:
             self.__list.current(2)
@@ -92,7 +91,7 @@ class SettingsWindowHaarCascade(SettingsWindow):
                 self.xml_file = xml_file
         # выбор стандартного файла
         elif self.__list.current() == 1:
-            self.xml_file = cv2.data.haarcascades + "haarcascade_frontalface_alt.xml"
+            self.xml_file = "Training_files\\haarcascade_frontalface_alt.xml"
 
     # сохранение настроек
     def _save_settings(self):

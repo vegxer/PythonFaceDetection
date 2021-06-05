@@ -26,7 +26,7 @@ class SaveImage:
             if face_found:
                 return True
             else:
-                messagebox.showwarning("Save error", "Image hasn't been changed")
+                messagebox.showerror("Save error", "Image hasn't been changed")
         else:
-            messagebox.showwarning("Undefined image", "Image hasn't been loaded")
+            messagebox.showerror("Undefined image", "Image hasn't been loaded")
         return False
