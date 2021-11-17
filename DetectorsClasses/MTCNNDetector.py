@@ -1,6 +1,5 @@
 import facenet_pytorch
 import cv2
-import torch
 from tkinter import messagebox
 import time
 from DetectorsClasses.Detector import Detector
@@ -19,8 +18,7 @@ class MTCNNFaceDetection(Detector):
         if self._are_all_variables_set():
             # загрузка изображения
             img = cv2.cvtColor(cv2.imread(self._image_name), cv2.COLOR_BGR2RGB)
-            device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-            self.__mtcnn_detector = facenet_pytorch.MTCNN(keep_all=True, device=device)
+            self.__mtcnn_detector = facenet_pytorch.MTCNN(keep_all=True, device='cpu')
             # замер времени выполнения алгоритма
             start = time.time()
             faces, _ = self.__mtcnn_detector.detect(img)
